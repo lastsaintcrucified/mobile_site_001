@@ -1,11 +1,17 @@
 import nc from "next-connect";
 import dbConnect from "../../../config/dbConnect";
 import onError from "../../../midllewares/errors";
-import { allBlogs, newBlog } from "../../../controllers/blogController";
+
+import {
+  getSingleBlog,
+  updateBlog,
+  deleteBlog,
+} from "../../../controllers/blogController";
 
 const handler = nc({ onError });
 dbConnect();
-handler.get(allBlogs);
-handler.post(newBlog);
+handler.get(getSingleBlog);
+handler.put(updateBlog);
+handler.delete(deleteBlog);
 
 export default handler;

@@ -1,12 +1,24 @@
 import Blogs from "../models/blogs";
 import ErrorHandler from "../utils/errorHandler";
-
+import APIFeatures from "../utils/apiFeatures";
 //get all blogs =>  api/blogs
 const allBlogs = async (req, res) => {
   try {
-    const blogs = await Blogs.find();
+    const resultPerPage = 5;
+    const blogsCount = await Blogs.countDocuments();
+    //Search by title
+    const apiFeatures = new APIFeatures(Blogs.find(), req.query)
+      .search()
+      .filter();
+    let blogs = await apiFeatures.query;
+    let filteredBlogsCount = blogs.length;
+    apiFeatures.pagination(resultPerPage);
+    blogs = await apiFeatures.query.clone();
     res.status(200).json({
       success: true,
+      blogsCount,
+      resultPerPage,
+      filteredBlogsCount,
       blogs,
     });
   } catch (err) {
